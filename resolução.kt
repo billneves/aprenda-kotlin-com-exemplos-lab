@@ -2,9 +2,9 @@ enum class Nivel { BASICO, INTERMEDIARIO, DIFICIL }
 
 class Usuario(val nome: String)
 
-data class ConteudoEducacional(var nome: String, val duracao: Int = 60)
+data class ConteudoEducacional(val nome: String, val duracao: Int = 60)
 
-data class Formacao(val nome: String, var conteudos: List<ConteudoEducacional>) {
+data class Formacao(val nome: String, val nivel: Nivel, var conteudos: List<ConteudoEducacional>) {
     val inscritos = mutableListOf<Usuario>()
 
     fun matricular(usuario: Usuario) {
@@ -14,6 +14,11 @@ data class Formacao(val nome: String, var conteudos: List<ConteudoEducacional>) 
         } else {
             println("${usuario.nome} já está matriculado nesta formação.")
         }
+    }
+
+    fun adicionarConteudo(conteudo: ConteudoEducacional) {
+        conteudos = conteudos + conteudo
+        println("Conteúdo ${conteudo.nome} adicionado à formação $nome.")
     }
 }
 
@@ -28,8 +33,8 @@ fun main() {
     val conteudo3 = ConteudoEducacional("Desenvolvimento Android", 90)
 
     // Criação de formações
-    val formacao1 = Formacao("Desenvolvedor Kotlin", listOf(conteudo1, conteudo2))
-    val formacao2 = Formacao("Android Developer", listOf(conteudo2, conteudo3))
+    val formacao1 = Formacao("Desenvolvedor Kotlin", Nivel.BASICO, listOf(conteudo1, conteudo2))
+    val formacao2 = Formacao("Android Developer", Nivel.INTERMEDIARIO, listOf(conteudo2, conteudo3))
 
     // Matrícula de usuários em formações
     formacao1.matricular(usuario1)
@@ -39,7 +44,13 @@ fun main() {
     // Tentativa de matrícula repetida
     formacao1.matricular(usuario1)
 
-    // Impressão de inscritos
+    // Adição de conteúdo à formação
+    val conteudo4 = ConteudoEducacional("Testes em Kotlin")
+    formacao1.adicionarConteudo(conteudo4)
+
+    // Impressão de inscritos e conteúdos
     println("Inscritos na formação ${formacao1.nome}: ${formacao1.inscritos.map { it.nome }}")
+    println("Conteúdos na formação ${formacao1.nome}: ${formacao1.conteudos.map { it.nome }}")
     println("Inscritos na formação ${formacao2.nome}: ${formacao2.inscritos.map { it.nome }}")
+    println("Conteúdos na formação ${formacao2.nome}: ${formacao2.conteudos.map { it.nome }}")
 }
